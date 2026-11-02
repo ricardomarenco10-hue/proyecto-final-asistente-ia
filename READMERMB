@@ -1,0 +1,92 @@
+# Proyecto Final — Asistente de Consultas Comerciales con IA
+
+## 1. Descripción del proyecto
+
+Desarrollo de un prototipo de automatización con n8n que utiliza inteligencia artificial local para analizar consultas comerciales y registrar las respuestas generadas en Google Sheets.
+
+El objetivo es reducir tareas manuales, agilizar el tratamiento inicial de consultas y facilitar su registro y seguimiento.
+
+## 2. Tecnologías utilizadas
+
+- **n8n:** plataforma de automatización.
+- **Ollama:** ejecución local del modelo de inteligencia artificial.
+- **Qwen2.5:3b:** modelo de lenguaje utilizado.
+- **Google Sheets:** almacenamiento y registro de resultados.
+- **Webhook HTTP POST:** punto de entrada del flujo.
+
+## 3. Arquitectura del workflow
+
+El flujo está compuesto por cuatro nodos principales:
+
+1. **Webhook:** recibe solicitudes HTTP POST.
+2. **Get row(s) in sheet:** obtiene consultas registradas en Google Sheets.
+3. **AI Agent:** analiza la consulta utilizando Ollama.
+4. **Update row in sheet:** registra la respuesta generada en la columna `respuesta_ia`.
+
+## 4. Prueba funcional
+
+Se ejecutó el workflow en n8n. Los cuatro nodos finalizaron correctamente y se verificó que la respuesta generada por Ollama quedó registrada en Google Sheets.
+
+## 5. Justificación del modelo local
+
+Se seleccionó Ollama con Qwen2.5:3b por las siguientes razones:
+
+- Procesamiento local.
+- Sin costo por consumo de tokens de una API externa.
+- Mayor control sobre los datos procesados.
+- Independencia de proveedores de inferencia en la nube.
+
+Como contrapartida, requiere recursos de hardware y disponibilidad del equipo local.
+
+## 6. Caso de negocio y ROI
+
+Se plantea automatizar parte del proceso de análisis y elaboración inicial de respuestas comerciales.
+
+Escenario ilustrativo, basado en supuestos:
+
+- 15 consultas diarias.
+- 22 días laborables al mes.
+- 5 minutos de trabajo manual por consulta.
+- Reducción estimada del 60% del tiempo.
+- Valor de hora de trabajo: USD 10.
+- Mantenimiento estimado: 2 horas mensuales.
+
+Ahorro potencial: 16,5 horas mensuales.
+
+Beneficio neto ilustrativo: USD 145 mensuales, descontando el mantenimiento estimado.
+
+Estos valores son proyecciones y no resultados económicos medidos.
+
+## 7. Alcance y limitaciones
+
+El desarrollo corresponde a un prototipo funcional.
+
+- El mensaje recibido por Webhook todavía no se utiliza directamente como entrada del agente.
+- El agente procesa consultas recuperadas desde Google Sheets.
+- La respuesta generada se almacena en `respuesta_ia`.
+- La clasificación estructurada de los campos requiere mejoras.
+- No se implementó una integración productiva con WhatsApp Business.
+- No se implementó memoria conversacional persistente.
+- No se incorporaron nodos específicos de gestión automática de errores.
+
+## 8. Mejoras futuras
+
+- Integración real con WhatsApp Business.
+- Procesamiento directo del mensaje recibido por Webhook.
+- Clasificación estructurada mediante JSON.
+- Validación de respuestas y manejo de errores.
+- Derivación de consultas a un operador humano.
+- Memoria conversacional por usuario.
+
+## 9. Archivos del repositorio
+
+- `Entrega_Final_Asistente_IA_WhatsApp_con_JSON.pdf`: documentación del proyecto y anexo técnico.
+- `workflow_asistente_ia_whatsapp_sanitizado.json`: exportación sanitizada del workflow n8n.
+
+## 10. Seguridad
+
+El JSON publicado tiene identificadores privados y referencias de credenciales sustituidos por marcadores. No contiene claves API, contraseñas ni tokens OAuth.
+
+---
+
+**Proyecto desarrollado como entrega final de Coderhouse — AI Automation.**
