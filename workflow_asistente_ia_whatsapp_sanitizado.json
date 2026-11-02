@@ -1,0 +1,279 @@
+{
+  "name": "PROYECTO FINAL - ASISTENTE WHATSAPP",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "WEBHOOK_PATH_SANITIZADO",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "7f1b9b65-8bf5-4cdf-99aa-e771be9525e0",
+      "name": "Webhook",
+      "webhookId": "WEBHOOK_ID_SANITIZADO"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "GOOGLE_SHEET_ID_ELIMINADO",
+          "mode": "list",
+          "cachedResultName": "Google Sheets (ID sanitizado)"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Hoja 1"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        0
+      ],
+      "id": "9f329bae-a7ff-42c8-9da5-ffabc6732522",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "CREDENTIAL_ID",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analiza la siguiente consulta comercial:\n\n{{ $json.consulta_original }}\n\nClasifica la consulta, genera un resumen breve e indica si requiere revisión humana.\n\nDevuelve:\n- categoria\n- resumen\n- prioridad (Alta, Media o Baja)\n- requiere_revision (Sí o No)",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        448,
+        0
+      ],
+      "id": "f62884f6-cd95-4d6b-8a8a-c973e2661856",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "qwen2.5:3b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        520,
+        232
+      ],
+      "id": "98a08e70-d45d-437c-9683-a35501d8c7d3",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "CREDENTIAL_ID",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "GOOGLE_SHEET_ID_ELIMINADO",
+          "mode": "list",
+          "cachedResultName": "Google Sheets (ID sanitizado)"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Hoja 1"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "consulta_original": "={{ $('Get row(s) in sheet').item.json.consulta_original }}",
+            "fecha_registro": "={{ $('Get row(s) in sheet').item.json.fecha_registro }}",
+            "categoria": "={{ $('Get row(s) in sheet').item.json.categoria }}",
+            "resumen": "={{ $('Get row(s) in sheet').item.json.resumen }}",
+            "prioridad": "={{ $('Get row(s) in sheet').item.json.prioridad }}",
+            "requiere_revision": "={{ $('Get row(s) in sheet').item.json.requiere_revision }}",
+            "respuesta_ia": "={{ $json.output }}"
+          },
+          "matchingColumns": [
+            "consulta_original"
+          ],
+          "schema": [
+            {
+              "id": "fecha_registro",
+              "displayName": "fecha_registro",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "consulta_original",
+              "displayName": "consulta_original",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "categoria",
+              "displayName": "categoria",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "resumen",
+              "displayName": "resumen",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "prioridad",
+              "displayName": "prioridad",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "requiere_revision",
+              "displayName": "requiere_revision",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "respuesta_ia",
+              "displayName": "respuesta_ia",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        800,
+        0
+      ],
+      "id": "a4e6d2c6-cb2d-4142-a3e5-c3b0bd788c20",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "CREDENTIAL_ID",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "55e802bd-5d70-44e7-b12d-4abe344cbdf7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "INSTANCE_ID_ELIMINADO"
+  },
+  "nodeGroups": [],
+  "id": "WORKFLOW_ID_SANITIZADO",
+  "tags": []
+}
