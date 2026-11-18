@@ -1,0 +1,30 @@
+{
+  "name": "GESTIÓN DE ERRORES – ASISTENTE IA",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "9512558a-e5c6-41aa-bcf5-584d63d20f93",
+      "name": "Error Trigger"
+    }
+  ],
+  "pinData": {},
+  "connections": {},
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "752d085e-4f64-43bd-a427-de12b3024ff1",
+  "meta": {
+    "instanceId": "9517543deb779fd9bb14766b94781fb900950759e853ac29199aa181d42fb602"
+  },
+  "nodeGroups": [],
+  "id": "3CHj5XNekV7Bg8UI",
+  "tags": []
+}

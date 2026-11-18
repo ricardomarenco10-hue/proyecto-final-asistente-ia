@@ -1,0 +1,293 @@
+{
+  "name": "PROYECTO FINAL - ASISTENTE WHATSAPP",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "1cbe381c-316e-4953-acc3-0e40c7664ac0",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "7f1b9b65-8bf5-4cdf-99aa-e771be9525e0",
+      "name": "Webhook",
+      "webhookId": "1cbe381c-316e-4953-acc3-0e40c7664ac0"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1UwxKhas9r7sOLEYf2x49ejJXtQloiRs8Duz6c9K2sNk",
+          "mode": "list",
+          "cachedResultName": "Hoja de cálculo sin tRegistro de consultas comerciales - Preentrega 3ítulo",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1UwxKhas9r7sOLEYf2x49ejJXtQloiRs8Duz6c9K2sNk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Hoja 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1UwxKhas9r7sOLEYf2x49ejJXtQloiRs8Duz6c9K2sNk/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": []
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        0
+      ],
+      "id": "9f329bae-a7ff-42c8-9da5-ffabc6732522",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "tBcChofRTlcPe1IJ",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analiza la siguiente consulta comercial:\n\n{{ $json.consulta_original }}\n\nClasifica la consulta, genera un resumen breve e indica si requiere revisión humana.\n\nDevuelve:\n- categoria\n- resumen\n- prioridad (Alta, Media o Baja)\n- requiere_revision (Sí o No)",
+        "options": {
+          "systemMessage": "Eres un asistente de inteligencia artificial especializado en consultas comerciales del sector farmacéutico en Uruguay.\n\nTu función es analizar consultas, clasificarlas y generar respuestas breves y profesionales.\n\nClasifica cada consulta en una categoría:\n- Pedido\n- Entrega\n- Producto\n- Precio\n- Documentación\n- Consulta comercial\n- Otra\n\nAsigna prioridad Alta, Media o Baja.\n\nDetermina si requiere revisión humana.\n\nNo inventes precios, stock, fechas de entrega, disponibilidad ni compromisos comerciales.\n\nSi falta información o la consulta requiere validación comercial, indica que necesita revisión humana.\n\nResponde siempre en español profesional, con claridad y precisión."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        448,
+        0
+      ],
+      "id": "f62884f6-cd95-4d6b-8a8a-c973e2661856",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "qwen2.5:3b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        528,
+        240
+      ],
+      "id": "98a08e70-d45d-437c-9683-a35501d8c7d3",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "T8z8IRU2nlMrCD90",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1UwxKhas9r7sOLEYf2x49ejJXtQloiRs8Duz6c9K2sNk",
+          "mode": "list",
+          "cachedResultName": "Hoja de cálculo sin tRegistro de consultas comerciales - Preentrega 3ítulo",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1UwxKhas9r7sOLEYf2x49ejJXtQloiRs8Duz6c9K2sNk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Hoja 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1UwxKhas9r7sOLEYf2x49ejJXtQloiRs8Duz6c9K2sNk/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "consulta_original": "={{ $('Get row(s) in sheet').item.json.consulta_original }}",
+            "fecha_registro": "={{ $('Get row(s) in sheet').item.json.fecha_registro }}",
+            "categoria": "={{ $('Get row(s) in sheet').item.json.categoria }}",
+            "resumen": "={{ $('Get row(s) in sheet').item.json.resumen }}",
+            "prioridad": "={{ $('Get row(s) in sheet').item.json.prioridad }}",
+            "requiere_revision": "={{ $('Get row(s) in sheet').item.json.requiere_revision }}",
+            "respuesta_ia": "=\t{{ $json.output }}"
+          },
+          "matchingColumns": [
+            "consulta_original"
+          ],
+          "schema": [
+            {
+              "id": "fecha_registro",
+              "displayName": "fecha_registro",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "consulta_original",
+              "displayName": "consulta_original",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "categoria",
+              "displayName": "categoria",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "resumen",
+              "displayName": "resumen",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "prioridad",
+              "displayName": "prioridad",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "requiere_revision",
+              "displayName": "requiere_revision",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "respuesta_ia",
+              "displayName": "respuesta_ia",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        800,
+        0
+      ],
+      "id": "a4e6d2c6-cb2d-4142-a3e5-c3b0bd788c20",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "tBcChofRTlcPe1IJ",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "3CHj5XNekV7Bg8UI",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "timezone": "America/Montevideo"
+  },
+  "versionId": "ccc3630f-4f8a-4778-b8c2-42a149f61d7e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9517543deb779fd9bb14766b94781fb900950759e853ac29199aa181d42fb602"
+  },
+  "nodeGroups": [],
+  "id": "bsMnOUF62gRYS1HS",
+  "tags": []
+}
