@@ -270,17 +270,12 @@ revisión humana consume la mayor parte del tiempo ahorrado.
 -   [ ] Completar el costo inicial para calcular ROI porcentual y
     payback.
 -   [ ] Revisar que no se hayan incluido datos ni secretos sensibles.
-
 ## 11. Conclusión
 
-Se recuperó y verificó el circuito principal del prototipo: recepción
-HTTP, lectura de Google Sheets, análisis mediante AI Agent con Qwen 2.5
-3B local y actualización de la hoja. Se incorporó un System Message y se
-configuró un workflow independiente de Error Trigger como manejador de
-errores del workflow principal.
+Se implementó y verificó el circuito principal del prototipo: recepción de consultas mediante Webhook HTTP, lectura de registros en Google Sheets, procesamiento mediante AI Agent con Qwen 2.5 3B ejecutado localmente con Ollama y actualización de la hoja de cálculo.
 
-El alcance sigue siendo un prototipo académico que simula la recepción
-de mensajes de WhatsApp. Antes de considerarlo listo para producción o
-declarar la robustez plenamente probada, deben completarse la prueba de
-fallo real, las evidencias, la exportación de workflows y la medición
-del ROI con costos reales.
+Se incorporó un workflow independiente con el nodo Error Trigger como base para la gestión de errores. Su configuración está documentada, aunque las acciones posteriores de notificación o recuperación no forman parte de esta versión.
+
+El proyecto constituye un prototipo académico funcional que simula la recepción de consultas tipo WhatsApp. No utiliza un número real ni la API de WhatsApp Business.
+
+Las estimaciones de ahorro y beneficio económico se presentan como hipótesis de negocio sujetas a validación con costos reales de implementación y operación.
